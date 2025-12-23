@@ -205,7 +205,14 @@ function startGame(livello) {
     document.getElementById('input-section').style.display = 'block';
     const input = document.getElementById('user-answer');
     input.value = '';
-    if (input) input.focus();
+    if (input) {
+      input.focus();
+      // Su mobile, seleziona tutto il contenuto e apri la tastiera
+      setTimeout(() => {
+        input.select();
+        input.setSelectionRange(0, 99);
+      }, 100);
+    }
   }, SHOW_TIME * flag + livello * 85);
 }
 
