@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prova Cubi</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .container { display: flex; gap: 2rem; }
+        .input-area { min-width: 200px; }
+        .grid {
+          display: grid;
+          grid-template-columns: repeat(5, 24px);
+          grid-template-rows: repeat(5, 24px);
+          gap: 2px;
+          background: #eee;
+          padding: 6px;
+        }
+        .cell {
+          width: 24px;
+          height: 24px;
+          background: #fff;
+          border: 1px solid #ccc;
+        }
+        .cube {
+            background: #3498db;
+            border: 2px solid #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prova Cubi sulla Griglia</h1>
+    <div class="container">
+      <div class="input-area">
+        <label for="cubesInput">Scrivi i cubi (formato: x,y,h per riga):</label><br>
+        <textarea id="cubesInput" rows="10" cols="20">1,1,1\n2,2,2\n3,3,3</textarea><br>
+        <button onclick="renderCubes2D(); renderCubes3D();">Mostra Cubi</button>
+        <div id="grid" class="grid" style="margin-top: 20px;"></div>
+      </div>
+      <div id="scene-container" style="width:600px; height:500px;"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+    <script>
+// --- Funzioni per la griglia 2D ---
+function createGrid2D(rows = 5, cols = 5) {
+  const grid = [];
+  for (let y = 0; y < rows; y++) {
+    const row = [];
+    for (let x = 0; x < cols; x++) {
+      row.push(false);
+    }
+    grid.push(row);
+  }
+  return grid;
+}
+
+// --- Parsing cubi 3D ---
+function parseCubesInput3D(input) {
+  const lines = input.split(/\n|\r/);
+  const cubes = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    const parts = trimmed.split(",");
+    if (parts.length === 3) {
+      const x = parseInt(parts[0], 10);
+      const y = parseInt(parts[1], 10);
+      const h = parseInt(parts[2], 10) + 1;
+      if (!isNaN(x) && !isNaN(y) && !isNaN(h)) {
+        cubes.push({ x, y, h });
+      }
+    }
+  }
+  return cubes;
+}
+
+// --- Render 2D ---
+function renderCubes2D() {
+  const input = document.getElementById('cubesInput').value;
+  const cubes = parseCubesInput3D(input);
+  const grid = createGrid2D(5, 5);
+  for (const cube of cubes) {
+    if (cube.x >= 0 && cube.x < 5 && cube.y >= 0 && cube.y < 5) {
+      grid[cube.y][cube.x] = true;
+    }
+  }
+  const gridDiv = document.getElementById('grid');
+  gridDiv.innerHTML = '';
+  for (let y = 0; y < 5; y++) {
+    for (let x = 0; x < 5; x++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell' + (grid[y][x] ? ' cube' : '');
+      gridDiv.appendChild(cell);
+    }
+  }
+}
+
+// --- Render 3D isometrico ---
+let scene, camera, renderer, threeCubes = [];
+const SCALE = 8; // Scala per cubi e griglia
+function renderCubes3D() {
+  const input = document.getElementById('cubesInput').value;
+  const cubes = parseCubesInput3D(input);
+  // Inizializza Three.js solo la prima volta
+  if (!renderer) {
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(600, 500);
+    document.getElementById('scene-container').appendChild(renderer.domElement);
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xfafafa);
+    const aspect = 600 / 500;
+    const d = 30;
+    camera = new THREE.OrthographicCamera(-d * aspect, d * aspect, d, -d, 1, 1000);
+    camera.position.set(20, 20, 20);
+    camera.lookAt(0, 0, 0);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.2);
+    scene.add(ambient);
+    const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+    dir.position.set(30, 60, 30);
+    scene.add(dir);
+    // Griglia base
+    const gridLines = [];
+    const GRID_SIZE = 5;
+    const half = (GRID_SIZE - 1) / 2;
+    for (let x = 0; x <= GRID_SIZE; x++) {
+      gridLines.push(
+        new THREE.Vector3((x - half - 0.5) * SCALE, 0, (-half - 0.5) * SCALE),
+        new THREE.Vector3((x - half - 0.5) * SCALE, 0, (half + 0.5) * SCALE)
+      );
+    }
+    for (let y = 0; y <= GRID_SIZE; y++) {
+      gridLines.push(
+        new THREE.Vector3((-half - 0.5) * SCALE, 0, (y - half - 0.5) * SCALE),
+        new THREE.Vector3((half + 0.5) * SCALE, 0, (y - half - 0.5) * SCALE)
+      );
+    }
+    const gridGeometry = new THREE.BufferGeometry().setFromPoints(gridLines);
+    const gridMaterial = new THREE.LineBasicMaterial({ color: 0xa8a8a8, linewidth: 2 });
+    const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
+    grid.position.y = -0.01;
+    scene.add(grid);
+  }
+  // Rimuovi cubi precedenti
+  if (threeCubes.length) {
+    for (const c of threeCubes) scene.remove(c);
+    threeCubes = [];
+  }
+  // Aggiungi cubi
+// Adatta anche la posizione dei cubi 3D
+  const colors = [0x3498db, 0xe74c3c, 0x2ecc71, 0xf39c12, 0x9b59b6, 0x1abc9c, 0xe67e22, 0x34495e];
+  for (const cube of cubes) {
+    const geometry = new THREE.BoxGeometry(0.98 * SCALE, 0.98 * SCALE, 0.98 * SCALE);
+    const colorIndex = (cube.h - 1) % colors.length;
+    const material = new THREE.MeshLambertMaterial({ color: colors[colorIndex] });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(
+      (cube.x - 2) * SCALE,
+      ((cube.h - 1) + 0.5) * SCALE,
+      (cube.y - 2) * SCALE
+    );
+    scene.add(mesh);
+    threeCubes.push(mesh);
+    // Bordo
+    const edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(1 * SCALE, 1 * SCALE, 1 * SCALE));
+    const edgeMat = new THREE.LineBasicMaterial({ color: 0x111111 });
+    const wire = new THREE.LineSegments(edgeGeo, edgeMat);
+    wire.position.copy(mesh.position);
+    scene.add(wire);
+    threeCubes.push(wire);
+  }
+  renderer.render(scene, camera);
+}
+
+// All'avvio
+if (document.getElementById('cubesInput')) {
+  renderCubes2D();
+  renderCubes3D();
+}
+    </script>
+</body>
+</html>

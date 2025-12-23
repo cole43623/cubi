@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conta i Cubi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="lives-counter" style="position:absolute;top:16px;right:32px;font-size:2rem;color:#e74c3c;user-select:none;z-index:100;"></div>
+  <h1>Quanti cubi hai visto?</h1>
+  <div id="scene-container"></div>
+  <div id="input-section" style="display:none;">
+    <input type="number" id="user-answer" min="1" max="25" placeholder="Numero di cubi">
+    <button id="submit-btn">Invia</button>
+    <div id="result">Livello: 1</div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.155.0/build/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
