@@ -3,6 +3,13 @@ body {
   color: #030408;
   font-family: sans-serif;
   text-align: center;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+}
+h1 {
+  margin: 10px 0;
+  font-size: 1.5rem;
 }
 #scene-container {
   width: 500px;
@@ -36,4 +43,40 @@ button {
   margin-top: 15px;
   font-size: 1.2em;
   font-weight: bold;
+}
+
+/* Media query per telefoni */
+@media (max-width: 600px) {
+  body {
+    padding: 5px;
+  }
+  h1 {
+    font-size: 1.2rem;
+    margin: 40px 0 5px 0;
+  }
+  #scene-container {
+    width: 90vw;
+    max-width: 350px;
+    height: calc(90vw * 0.84);
+    max-height: 294px;
+    margin: 10px auto;
+  }
+  #input-section {
+    margin-top: 15px;
+  }
+  input[type=number] {
+    font-size: 1em;
+    width: 70px;
+  }
+  button {
+    font-size: 1em;
+    padding: 5px 15px;
+  }
+  #result {
+    font-size: 1em;
+  }
+  #lives-counter {
+    font-size: 1.5rem !important;
+    margin: 5px 0 !important;
+  }
 }

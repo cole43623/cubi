@@ -34,7 +34,10 @@ function setupScene() {
   scene.background = new THREE.Color(0xfafafa); // chiaro
 
   // Camera isometrica
-  const aspect = 500 / 500;
+  const container = document.getElementById('scene-container');
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  const aspect = width / height;
   const d = 4;
   camera = new THREE.OrthographicCamera(
     -d * aspect, d * aspect, d, -d, 1, 100
@@ -172,6 +175,7 @@ function startGame(livello) {
   // Genera un numero casuale di cubi totali, ma la risposta è quanti sono visibili
   // Progressione più lineare e incrementi piccoli
   console.log(`------ Livello ${livello} ------`);
+  updateLivesCounter();
   let minCubes = 2 + livello;
   let maxCubes = Math.min(GRID_SIZE * GRID_SIZE, minCubes + 2 + Math.floor(livello/2));
   if (livello > 7 && livello%2 && Math.random() < 0.5) {
@@ -216,12 +220,27 @@ function updateLivesCounter() {
 window.onload = function () {
   const container = document.getElementById('scene-container');
   renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(500, 500);
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+  renderer.setSize(width, height);
   container.appendChild(renderer.domElement);
   setupScene();
-  updateLivesCounter();
   animate();
   startGame(livello);
+
+  // Gestione resize
+  window.addEventListener('resize', function() {
+    const newWidth = container.clientWidth;
+    const newHeight = container.clientHeight;
+    renderer.setSize(newWidth, newHeight);
+    const aspect = newWidth / newHeight;
+    const d = 4;
+    camera.left = -d * aspect;
+    camera.right = d * aspect;
+    camera.top = d;
+    camera.bottom = -d;
+    camera.updateProjectionMatrix();
+  });
 
   const input = document.getElementById('user-answer');
   const submitBtn = document.getElementById('submit-btn');
@@ -238,6 +257,7 @@ window.onload = function () {
           result.textContent = `Sbagliato! Erano ${N} cubi.`;
           result.style.color = '#f44336';
           lives--;
+          updateLivesCounter();
           if (lives <= 0) {
             result.innerHTML += `<br>Game Over! Hai raggiunto il livello ${livello}.`;
             livello = 1;
@@ -253,7 +273,6 @@ window.onload = function () {
               }
             }
           }
-          updateLivesCounter();
           addCubes(cubeGrid);
           setTimeout(() => {
             document.getElementById('input-section').style.display = 'none';
