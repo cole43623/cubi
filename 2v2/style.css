@@ -1,0 +1,108 @@
+body {
+  background: #fafafa;
+  color: #030408;
+  font-family: sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 10px;
+  box-sizing: border-box;
+}
+h1 {
+  margin: 10px 0;
+  font-size: 1.5rem;
+}
+#scene-container {
+  width: 500px;
+  height: 420px; /* ripristinato per mantenere il disegno originale */
+  margin: 30px auto 10px auto; /* margini originali */
+  background: #fafafa;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #fafafa;
+}
+#input-section {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 10;
+  margin: 0 auto;
+  width: 100%;
+  pointer-events: auto;
+}
+
+/* Elimina lo spazio extra sotto il canvas (baseline gap) */
+#scene-container canvas {
+  display: block;
+}
+#input-section {
+  margin-top: 20px;
+}
+input[type=number] {
+  font-size: 1.2em;
+  width: 80px;
+  padding: 5px;
+  border-radius: 5px;
+  border: none;
+}
+button {
+  font-size: 1.1em;
+  padding: 6px 18px;
+  border-radius: 5px;
+  border: none;
+  background: #3a8dde;
+  color: #fff;
+  cursor: pointer;
+  margin-left: 10px;
+}
+#result {
+  margin-top: 15px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+/* Media query per telefoni */
+@media (max-width: 600px) {
+  body {
+    padding: 5px;
+  }
+  h1 {
+    font-size: 1.2rem;
+    margin: 40px 0 5px 0;
+  }
+  #scene-container {
+    width: 90vw;
+    max-width: 350px;
+    height: calc(90vw * 0.84); /* ripristinato */
+    max-height: 294px;
+    margin: 10px auto;
+  }
+  #input-section {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin: 0 auto;
+    width: 100%;
+  }
+  #scene-container canvas {
+    display: block;
+  }
+  #input-section {
+    margin-top: 15px;
+  }
+  input[type=number] {
+    font-size: 1em;
+    width: 70px;
+  }
+  button {
+    font-size: 1em;
+    padding: 5px 15px;
+  }
+  #result {
+    font-size: 1em;
+  }
+  #lives-counter {
+    font-size: 1.5rem !important;
+    margin: 5px 0 !important;
+  }
+}
