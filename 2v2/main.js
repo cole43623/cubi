@@ -2,7 +2,7 @@
 const GRID_SIZE = 5;
 const CUBE_SIZE = 1.0;
 const CUBE_HEIGHT = 1.0;
-const SHOW_TIME = 1500; // ms
+const SHOW_TIME = 1150; // ms
 
 let N = Math.floor(Math.random() * (GRID_SIZE * GRID_SIZE * 3 - 1)) + 1; // Fino a 3 cubi per cella
 let cubeGrid = [];
@@ -58,46 +58,46 @@ function setupScene() {
   dir.position.set(10, 20, 10);
   scene.add(dir);
 
-    // Griglia base: solo linee orizzontali e verticali, senza diagonali
-    const gridLines = [];
-    const half = (GRID_SIZE - 1) / 2;
-    // Linee verticali
-    for (let x = 0; x <= GRID_SIZE; x++) {
-      gridLines.push(
-        new THREE.Vector3(x - half - 0.5, 0, -half - 0.5),
-        new THREE.Vector3(x - half - 0.5, 0, half + 0.5)
-      );
-    }
-    // Linee orizzontali
-    for (let y = 0; y <= GRID_SIZE; y++) {
-      gridLines.push(
-        new THREE.Vector3(-half - 0.5, 0, y - half - 0.5),
-        new THREE.Vector3(half + 0.5, 0, y - half - 0.5)
-      );
-    }
-    const gridGeometry = new THREE.BufferGeometry().setFromPoints(gridLines);
-    //colore griglia
-    const gridMaterial = new THREE.LineBasicMaterial({ color: 0xa8a8a8, linewidth: 0.5 });
-    const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
-    grid.position.y = -0.01;
-    scene.add(grid);
+  // Griglia base: solo linee orizzontali e verticali, senza diagonali
+  const gridLines = [];
+  const half = (GRID_SIZE - 1) / 2;
+  // Linee verticali
+  for (let x = 0; x <= GRID_SIZE; x++) {
+    gridLines.push(
+      new THREE.Vector3(x - half - 0.5, 0, -half - 0.5),
+      new THREE.Vector3(x - half - 0.5, 0, half + 0.5)
+    );
+  }
+  // Linee orizzontali
+  for (let y = 0; y <= GRID_SIZE; y++) {
+    gridLines.push(
+      new THREE.Vector3(-half - 0.5, 0, y - half - 0.5),
+      new THREE.Vector3(half + 0.5, 0, y - half - 0.5)
+    );
+  }
+  const gridGeometry = new THREE.BufferGeometry().setFromPoints(gridLines);
+  //colore griglia
+  const gridMaterial = new THREE.LineBasicMaterial({ color: 0xa8a8a8, linewidth: 0.5 });
+  const grid = new THREE.LineSegments(gridGeometry, gridMaterial);
+  grid.position.y = -0.01;
+  scene.add(grid);
 }
 
 function addCubes(grid) {
   for (let x = 0; x < GRID_SIZE; x++) {
     for (let y = 0; y < GRID_SIZE; y++) {
       for (let h = 0; h < grid[x][y]; h++) {
-                const cubeGeo = new THREE.BoxGeometry(CUBE_SIZE * 0.98, CUBE_HEIGHT * 0.98, CUBE_SIZE * 0.98);
-                // Materiali: [right, left, top, bottom, front, back]
-                const materials = [
-                  new THREE.MeshBasicMaterial({ color: 0x888888 }), // right (grigio scuro)
-                  new THREE.MeshBasicMaterial({ color: 0xfafafa }), // left (grigio chiaro)
-                  new THREE.MeshBasicMaterial({ color: 0xffffff }), // top (bianco)
-                  new THREE.MeshBasicMaterial({ color: 0xfafafa }), // bottom (sfondo)
-                  new THREE.MeshBasicMaterial({ color: 0xe9e9e9 }), // front (sfondo)
-                  new THREE.MeshBasicMaterial({ color: 0xfafafa })  // back (sfondo)
-                ];
-                const cube = new THREE.Mesh(cubeGeo, materials);
+        const cubeGeo = new THREE.BoxGeometry(CUBE_SIZE * 0.98, CUBE_HEIGHT * 0.98, CUBE_SIZE * 0.98);
+        // Materiali: [right, left, top, bottom, front, back]
+        const materials = [
+          new THREE.MeshBasicMaterial({ color: 0x888888 }), // right (grigio scuro)
+          new THREE.MeshBasicMaterial({ color: 0xfafafa }), // left (grigio chiaro)
+          new THREE.MeshBasicMaterial({ color: 0xffffff }), // top (bianco)
+          new THREE.MeshBasicMaterial({ color: 0xfafafa }), // bottom (sfondo)
+          new THREE.MeshBasicMaterial({ color: 0xe9e9e9 }), // front (sfondo)
+          new THREE.MeshBasicMaterial({ color: 0xfafafa })  // back (sfondo)
+        ];
+        const cube = new THREE.Mesh(cubeGeo, materials);
         cube.position.set(
           x - (GRID_SIZE - 1) / 2,
           (CUBE_HEIGHT / 2) + h * CUBE_HEIGHT,
@@ -106,7 +106,7 @@ function addCubes(grid) {
         scene.add(cube);
         cubes.push(cube);
         // Bordo grigio scuro per ogni cubo
-        const edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(CUBE_SIZE *1, CUBE_HEIGHT *1, CUBE_SIZE *1));
+        const edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(CUBE_SIZE * 1, CUBE_HEIGHT * 1, CUBE_SIZE * 1));
         const edgeMat = new THREE.LineBasicMaterial({ color: 0x111111, linewidth: 2 });
         const wire = new THREE.LineSegments(edgeGeo, edgeMat);
         wire.position.copy(cube.position);
@@ -131,13 +131,13 @@ function animate() {
 
 function countVisibleCubes(grid) {
   let visibleCount = 0;
-  
+
   // Funzione helper per verificare se esiste un cubo a (x, y, h)
   function hasCube(x, y, h) {
     if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE || h < 0) return false;
     return grid[x][y] > h;
   }
-  
+
   for (let x = 0; x < GRID_SIZE; x++) {
     for (let y = 0; y < GRID_SIZE; y++) {
       for (let h = 0; h < grid[x][y]; h++) {
@@ -145,16 +145,16 @@ function countVisibleCubes(grid) {
         // x+k,y+k,h+k ||
         // (x+1+k,y+k,h+k && x+k,y+1+k,h+k &&
         //   (x+k,y+k,h+1+k || (x+1+k,y+k,h+1+k && x+k,y+1+k,h+1+k)))
-        
+
         let isVisible = true;
-        
+
         let hasDiag = false;
         let hasRight = false;
         let hasFront = false;
         let hasTop = false;
         let hasTopRight = false;
         let hasTopFront = false;
-        
+
         for (let k = 0; k < GRID_SIZE; k++) {
           hasDiag ||= hasCube(x + 1 + k, y + 1 + k, h + 1 + k);
           hasRight ||= hasCube(x + 1 + k, y + k, h + k);
@@ -183,8 +183,8 @@ function startGame(livello) {
   console.log(`------ Livello ${livello} ------`);
   updateLivesCounter();
   let minCubes = 2 + livello;
-  let maxCubes = Math.min(GRID_SIZE * GRID_SIZE, minCubes + 2 + Math.floor(livello/2));
-  if (livello > 7 && livello%2 && Math.random() < 0.5) {
+  let maxCubes = Math.min(GRID_SIZE * GRID_SIZE, minCubes + 2 + Math.floor(livello / 2));
+  if (livello > 7 && livello % 2 && Math.random() < 0.5) {
     minCubes = 4;
     maxCubes = 6;
     flag = 0;
@@ -219,7 +219,7 @@ function startGame(livello) {
     const result = document.getElementById('result');
     const submitBtnEl = document.getElementById('submit-btn');
     if (submitBtnEl) submitBtnEl.style.display = 'none';
-    let seconds = 5;
+    let seconds = livello > 10 ? 6 : 5;
     if (result) {
       result.style.color = '#000';
       result.textContent = `${seconds}`;
@@ -238,7 +238,7 @@ function startGame(livello) {
         if (sb) sb.click();
       }
     }, 1000);
-  }, SHOW_TIME * flag + livello * 85);
+  }, (SHOW_TIME + livello * 85) * flag + 350);
 }
 
 function updateLivesCounter() {
@@ -263,7 +263,7 @@ window.onload = function () {
   startGame(livello);
 
   // Gestione resize
-  window.addEventListener('resize', function() {
+  window.addEventListener('resize', function () {
     const newWidth = container.clientWidth;
     const newHeight = container.clientHeight;
     renderer.setSize(newWidth, newHeight);
@@ -279,96 +279,94 @@ window.onload = function () {
   leftDigit = document.getElementById('left-digit');
   rightDigit = document.getElementById('right-digit');
   const submitBtn = document.getElementById('submit-btn');
-        submitBtn.onclick = function () {
-          if (submitBtn.disabled) return;
-          submitBtn.disabled = true;
-          flag_ingame = 0;
-          if (countdownInterval) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-          }
-          const val1 = leftValue;
-          const val2 = rightValue;
-          const result = document.getElementById('result');
-          
-          let player1Correct = (val1 === N);
-          let player2Correct = (val2 === N);
-          
-          if (player1Correct && player2Correct) {
-            result.textContent = 'Entrambi corretti!';
-            result.style.color = '#4caf50';
-            livello++;
-          } else {
-            let msg = '';
-            if (!player1Correct) {
-              lives_player1--;
-              msg += '❤️ Sbagliato! ';
-            } else {
-              msg += '❤️ Corretto! ';
-            }
-            msg += `                Erano ${N} cubi.                `;
-            if (!player2Correct) {
-              lives_player2--;
-              msg += ' Sbagliato! 💙';
-            } else {
-              msg += ' Corretto! 💙';
-            }
+  submitBtn.onclick = function () {
+    if (submitBtn.disabled) return;
+    submitBtn.disabled = true;
+    flag_ingame = 0;
+    if (countdownInterval) {
+      clearInterval(countdownInterval);
+      countdownInterval = null;
+    }
+    const val1 = leftValue;
+    const val2 = rightValue;
+    const result = document.getElementById('result');
 
-            result.textContent = msg;
-            //result.style.color = '#f44336';
-            updateLivesCounter();
-            
-            if (lives_player1 == 0 && lives_player2 == 0) {
-              lives_player1++;
-              lives_player2++;
-            }
+    let player1Correct = (val1 === N);
+    let player2Correct = (val2 === N);
 
-            if (lives_player1 <= 0 || lives_player2 <= 0) {
-              // Mostra schermata di vittoria
-              const victoryScreen = document.getElementById('victory-screen');
-              const victoryMessage = document.getElementById('victory-message');
-              
-              if (lives_player1 <= 0) {
-                victoryMessage.textContent = '💙 Player 2 Vince! 💙';
-                victoryMessage.style.color = '#5dade2';
-              } else {
-                victoryMessage.textContent = '❤️ Player 1 Vince! ❤️';
-                victoryMessage.style.color = '#e74c3c';
-              }
-              
-              victoryScreen.style.display = 'flex';
-              return; // Blocca l'esecuzione normale
-            } else {
-              livello++;
-            }
-            
-            // Stampa posizione cubi in console
-            console.log('Griglia cubi (grid[x][y] = altezza):');
-            for (let x = 0; x < GRID_SIZE; x++) {
-              for (let y = 0; y < GRID_SIZE; y++) {
-                if (cubeGrid[x][y] > 0) {
-                  console.log(`  Cella (${x}, ${y}): ${cubeGrid[x][y]} cubi impilati`);
-                }
-              }
-            }
+    if (player1Correct && player2Correct) {
+      result.textContent = 'Entrambi corretti!';
+      result.style.color = '#4caf50';
+      livello++;
+    } else {
+      let msg = '';
+      if (!player1Correct) {
+        lives_player1--;
+        msg += '❤️ Sbagliato! ';
+      } else {
+        msg += '❤️ Corretto! ';
+      }
+      msg += `                Erano ${N} cubi.                `;
+      if (!player2Correct) {
+        lives_player2--;
+        msg += ' Sbagliato! 💙';
+      } else {
+        msg += ' Corretto! 💙';
+      }
+
+      result.textContent = msg;
+      //result.style.color = '#f44336';
+      updateLivesCounter();
+
+      if (lives_player1 == 0 && lives_player2 == 0) {
+        lives_player1++;
+        lives_player2++;
+      }
+
+      if (lives_player1 <= 0 || lives_player2 <= 0) {
+        // Mostra schermata di vittoria
+        const victoryScreen = document.getElementById('victory-screen');
+        const victoryMessage = document.getElementById('victory-message');
+
+        if (lives_player1 <= 0) {
+          victoryMessage.textContent = '💙 Player 2 Vince! 💙';
+          victoryMessage.style.color = '#5dade2';
+        } else {
+          victoryMessage.textContent = '❤️ Player 1 Vince! ❤️';
+          victoryMessage.style.color = '#e74c3c';
+        }
+
+        victoryScreen.style.display = 'flex';
+        return; // Blocca l'esecuzione normale
+      }
+
+      // Stampa posizione cubi in console
+      console.log('Griglia cubi (grid[x][y] = altezza):');
+      for (let x = 0; x < GRID_SIZE; x++) {
+        for (let y = 0; y < GRID_SIZE; y++) {
+          if (cubeGrid[x][y] > 0) {
+            console.log(`  Cella (${x}, ${y}): ${cubeGrid[x][y]} cubi impilati`);
           }
-          
-          addCubes(cubeGrid);
-          setTimeout(() => {
-            document.getElementById('input-section').style.display = 'none';
-            removeCubes();
-            result.textContent = `Livello: ${livello}`;
-            result.style.color = '#000';
-            startGame(livello);
-            submitBtn.disabled = false;
-          }, 2000);
+        }
+      }
+    }
+
+    addCubes(cubeGrid);
+    setTimeout(() => {
+      document.getElementById('input-section').style.display = 'none';
+      removeCubes();
+      result.textContent = `Livello: ${livello}`;
+      result.style.color = '#000';
+      startGame(livello);
+      submitBtn.disabled = false;
+    }, 2000);
   };
 
   // Gestione tastiera: a s (sinistra), k l (destra)
   document.addEventListener('keydown', function (e) {
     if (flag_ingame == 0) return;
     if (document.getElementById('input-section').style.display === 'none') return;
-    
+
     if (e.key === 'Enter' || e.key === ' ') {
       submitBtn.click();
       e.preventDefault();
@@ -401,7 +399,7 @@ window.onload = function () {
 
   // Gestione pulsante restart
   const restartBtn = document.getElementById('restart-btn');
-  restartBtn.onclick = function() {
+  restartBtn.onclick = function () {
     lives_player1 = 3;
     lives_player2 = 3;
     livello = 1;
